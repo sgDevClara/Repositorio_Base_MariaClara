@@ -1,0 +1,125 @@
+from flask import Flask, render_template
+import webbrowser
+from threading import Timer
+
+app = Flask(__name__)
+
+
+# ==============================
+# JOGOS
+# ==============================
+
+jogos = [
+    {
+        "id": 1,
+        "nome": "Resident Evil",
+        "descricao": "Uma experiência de terror e sobrevivência cheia de mistérios.",
+        "preco": 149.90,
+        "imagem": "j1.png"
+    },
+
+    {
+        "id": 2,
+        "nome": "Super Coleção",
+        "descricao": "Uma coleção especial para fãs de videogames e experiências clássicas.",
+        "preco": 29.90,
+        "imagem": "j2.png"
+    },
+
+    {
+        "id": 3,
+        "nome": "Street Fighter",
+        "descricao": "Entre em batalhas intensas usando diferentes personagens e estilos de luta.",
+        "preco": 129.90,
+        "imagem": "j3.png"
+    }
+]
+
+
+# ==============================
+# PÁGINA INICIAL
+# ==============================
+
+@app.route("/")
+def inicio():
+
+    return render_template(
+        "index.html",
+        jogos=jogos
+    )
+
+
+# ==============================
+# DETALHES DO JOGO
+# ==============================
+
+@app.route("/jogo/<int:id>")
+def detalhes(id):
+
+    jogo = None
+
+    for item in jogos:
+
+        if item["id"] == id:
+            jogo = item
+            break
+
+    if jogo is None:
+        return "Jogo não encontrado!", 404
+
+    return render_template(
+        "detalhes.html",
+        jogo=jogo
+    )
+
+
+# ==============================
+# COMPRA
+# ==============================
+
+@app.route("/comprar/<int:id>")
+def comprar(id):
+
+    jogo = None
+
+    for item in jogos:
+
+        if item["id"] == id:
+            jogo = item
+            break
+
+    if jogo is None:
+        return "Jogo não encontrado!", 404
+
+    return render_template(
+        "compra.html",
+        jogo=jogo
+    )
+
+
+# ==============================
+# ABRIR NAVEGADOR
+# ==============================
+
+def abrir_navegador():
+
+    webbrowser.open(
+        "http://127.0.0.1:5000/"
+    )
+
+
+# ==============================
+# INICIAR FLASK
+# ==============================
+
+if __name__ == "__main__":
+
+    Timer(
+        1,
+        abrir_navegador
+    ).start()
+
+    app.run(
+        debug=True,
+        use_reloader=False
+    )
